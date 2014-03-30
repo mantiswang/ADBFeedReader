@@ -35,7 +35,6 @@
 		D3E736E318356E40006F0F5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D3E736E018356E40006F0F5D /* InfoPlist.strings */; };
 		D3E736EE18356EA7006F0F5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D3E736EA18356EA7006F0F5D /* InfoPlist.strings */; };
 		F0104EA8170844FC00B30C6F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0104EA7170844FC00B30C6F /* SystemConfiguration.framework */; };
-		F047231017062ABD00EE78D2 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F047230F17062ABD00EE78D2 /* SenTestingKit.framework */; };
 		F047231117062ABD00EE78D2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7AB8BC151D932E00FB21FA /* UIKit.framework */; };
 		F047231217062ABD00EE78D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7AB8BE151D932E00FB21FA /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -89,8 +88,7 @@
 		D3E736E118356E40006F0F5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D3E736EB18356EA7006F0F5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ADBFeedReader/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		F0104EA7170844FC00B30C6F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ADBFeedReaderTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F047230F17062ABD00EE78D2 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ADBFeedReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F092FD5218CBC7E700CB5264 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		F092FD5418CBCA2C00CB5264 /* LICENSE.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.markdown; sourceTree = "<group>"; };
 		F092FD5618CBD2B400CB5264 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -114,7 +112,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F047231017062ABD00EE78D2 /* SenTestingKit.framework in Frameworks */,
 				F047231117062ABD00EE78D2 /* UIKit.framework in Frameworks */,
 				F047231217062ABD00EE78D2 /* Foundation.framework in Frameworks */,
 			);
@@ -141,7 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				4B7AB8B8151D932E00FB21FA /* ADBFeedReader.app */,
-				F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.octest */,
+				F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -156,7 +153,6 @@
 				4B7AB8C2151D932E00FB21FA /* CoreData.framework */,
 				CB77CF92209341ACB8FD9942 /* libPods.a */,
 				F0104EA7170844FC00B30C6F /* SystemConfiguration.framework */,
-				F047230F17062ABD00EE78D2 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -326,8 +322,8 @@
 			);
 			name = ADBFeedReaderTests;
 			productName = EFFeedReader;
-			productReference = F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -336,6 +332,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = FBCD;
+				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Adam Burkepile";
 			};
@@ -608,7 +605,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = ADBFeedReaderTests;
 				VALID_ARCHS = "armv7 armv7s";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -634,7 +630,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = ADBFeedReaderTests;
 				VALID_ARCHS = "armv7 armv7s";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
