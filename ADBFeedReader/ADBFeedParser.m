@@ -23,6 +23,7 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 @property (nonatomic, strong) NSDictionary *currentElementAttributes;
 @property (nonatomic, strong) NSXMLParser *feedParser;
 @property (nonatomic, strong) NSString *connectionTextEncodingName;
+@property (nonatomic, strong) dispatch_queue_t workingQueue;
 
 @end
 
@@ -30,6 +31,12 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 
 @synthesize delegate = _delegate;
 @synthesize url = _url;
+
+- (id)init
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
 
 - (id)initWithURL:(NSURL *)url
 {
@@ -39,6 +46,7 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
     
     if (self) {
         _url = [url copy];
+        _workingQueue = dispatch_queue_create("com.albertodebortoli.feedparser", DISPATCH_QUEUE_SERIAL);
     }
     
     return self;
@@ -73,7 +81,7 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 {
 	// Debug Log
 	DLog(@"ADBFeedParser: Parsing stopped");
-
+    
 	self.connectionTextEncodingName = nil;
     [self.feedParser abortParsing];
 }
@@ -82,41 +90,50 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 
 - (void)parserDidStartDocument:(NSXMLParser *)parser
 {
-    DLog(@"didStartDocument");
-    if ([self.delegate respondsToSelector:@selector(feedParserDidStart:)])
-		[self.delegate feedParserDidStart:self];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"didStartDocument");
+        if ([self.delegate respondsToSelector:@selector(feedParserDidStart:)]) {
+            [self.delegate feedParserDidStart:self];
+        }
+    });
 }
 
 - (void)parserDidEndDocument:(NSXMLParser *)parser
 {
-    DLog(@"didEndDocument");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"didEndDocument");
         
-    if ([self.delegate respondsToSelector:@selector(feedParserDidFinish:)]) {
-		[self.delegate feedParserDidFinish:self];
-    }
-    
-	[self _reset];
+        if ([self.delegate respondsToSelector:@selector(feedParserDidFinish:)]) {
+            [self.delegate feedParserDidFinish:self];
+        }
+        
+        [self _reset];
+    });
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
 {
-	DLog(@"parser:foundCharacters: %@", string);
-    [self.currentText appendString:string];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"parser:foundCharacters: %@", string);
+        [self.currentText appendString:string];
+    });
 }
 
 - (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock
 {
-	DLog(@"NSXMLParser: foundCDATA (%d bytes)", CDATABlock.length);
-	
-	NSString *string = [[NSString alloc] initWithData:CDATABlock encoding:NSUTF8StringEncoding];
-    
-    if (!string) {
-        string = [[NSString alloc] initWithData:CDATABlock encoding:NSISOLatin1StringEncoding];
-    }
-    
-    if (string) {
-        [self.currentText appendString:string];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"NSXMLParser: foundCDATA (%d bytes)", CDATABlock.length);
+        
+        NSString *string = [[NSString alloc] initWithData:CDATABlock encoding:NSUTF8StringEncoding];
+        
+        if (!string) {
+            string = [[NSString alloc] initWithData:CDATABlock encoding:NSISOLatin1StringEncoding];
+        }
+        
+        if (string) {
+            [self.currentText appendString:string];
+        }
+    });
 }
 
 - (void)parser:(NSXMLParser *)parser
@@ -125,22 +142,24 @@ didStartElement:(NSString *)elementName
  qualifiedName:(NSString *)qName
     attributes:(NSDictionary *)attributeDict
 {
-    DLog(@"didStartElement: %@", elementName);
-    
-    // Adjust path
-	self.currentPath = [self.currentPath stringByAppendingPathComponent:qName];
-    self.currentText = [NSMutableString string];
-    self.currentElementAttributes = attributeDict;
-    
-    // print all attributes for this element
-    NSEnumerator *attrs = [attributeDict keyEnumerator];
-    NSString *key;
-//    NSString *value;
-    
-    while((key = [attrs nextObject]) != nil) {
-        //value = [attributeDict objectForKey:key];
-        DLog(@"  attribute: %@ = %@", key, value);
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"didStartElement: %@", elementName);
+        
+        // Adjust path
+        self.currentPath = [self.currentPath stringByAppendingPathComponent:qName];
+        self.currentText = [NSMutableString string];
+        self.currentElementAttributes = attributeDict;
+        
+        // print all attributes for this element
+        NSEnumerator *attrs = [attributeDict keyEnumerator];
+        NSString *key;
+        //    NSString *value;
+        
+        while((key = [attrs nextObject]) != nil) {
+            //value = [attributeDict objectForKey:key];
+            DLog(@"  attribute: %@ = %@", key, value);
+        }
+    });
 }
 
 - (void)parser:(NSXMLParser *)parser
@@ -148,122 +167,128 @@ didStartElement:(NSString *)elementName
   namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qName
 {
-    DLog(@"didEndElement: %@", elementName);
-    DLog(@"NSXMLParser: didEndElement: %@", qName);
-	
-	// Store data
-	BOOL processed = NO;
-	if (self.currentText) {
-		
-		// Remove newlines and whitespace from currentText
-		NSString *trimmedText = [self.currentText stringByRemovingNewLinesAndWhitespace];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"didEndElement: %@", elementName);
+        DLog(@"NSXMLParser: didEndElement: %@", qName);
         
-        // Info
-        if (!processed) {
-            if ([self.currentPath isEqualToString:@"/rss/channel/title"]) {
-                if (trimmedText.length) {
-                    self.info = [[ADBFeedInfoDTO alloc] init];
-                    self.info.title = trimmedText;
+        // Store data
+        BOOL processed = NO;
+        if (self.currentText) {
+            
+            // Remove newlines and whitespace from currentText
+            NSString *trimmedText = [self.currentText stringByRemovingNewLinesAndWhitespace];
+            
+            // Info
+            if (!processed) {
+                if ([self.currentPath isEqualToString:@"/rss/channel/title"]) {
+                    if (trimmedText.length) {
+                        self.info = [[ADBFeedInfoDTO alloc] init];
+                        self.info.title = trimmedText;
+                    }
+                    processed = YES;
                 }
-                processed = YES;
+                else if ([self.currentPath isEqualToString:@"/rss/channel/description"]) {
+                    if (trimmedText.length) {
+                        self.info.summary = trimmedText;
+                    }
+                    processed = YES;
+                }
+                else if ([self.currentPath isEqualToString:@"/rss/channel/link"]) {
+                    if (trimmedText.length) {
+                        self.info.link = trimmedText;
+                    }
+                    processed = YES;
+                }
             }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/description"]) {
-                if (trimmedText.length) {
-                    self.info.summary = trimmedText;
+            
+            // Item
+            if (!processed) {
+                if ([self.currentPath isEqualToString:@"/rss/channel/item/title"]) {
+                    if (trimmedText.length) {
+                        self.item = [[ADBFeedItemDTO alloc] init];
+                        self.item.title = trimmedText;
+                    }
+                    processed = YES;
                 }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/link"]) {
-                if (trimmedText.length) {
-                    self.info.link = trimmedText;
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/link"]) {
+                    if (trimmedText.length) {
+                        self.item.link = trimmedText;
+                    }
+                    processed = YES;
                 }
-                processed = YES;
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/guid"]) {
+                    if (trimmedText.length) {
+                        self.item.identifier = trimmedText;
+                    }
+                    processed = YES;
+                }
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/description"]) {
+                    if (trimmedText.length) {
+                        self.item.summary = trimmedText;
+                    }
+                    processed = YES;
+                }
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/media:thumbnail"]) {
+                    [self _processImageLink:self.currentElementAttributes addToObject:self.item];
+                    processed = YES;
+                }
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/content:encoded"]) {
+                    if (trimmedText.length) {
+                        self.item.content = trimmedText;
+                    }
+                    processed = YES;
+                }
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/pubDate"]) {
+                    if (trimmedText.length) {
+                        self.item.date = [NSDate dateFromInternetDateTimeString:trimmedText formatHint:DateFormatHintRFC822];
+                    }
+                    processed = YES;
+                }
+                else if ([self.currentPath isEqualToString:@"/rss/channel/item/dc:date"]) {
+                    if (trimmedText.length) {
+                        self.item.date = [NSDate dateFromInternetDateTimeString:trimmedText formatHint:DateFormatHintRFC3339];
+                    }
+                    processed = YES;
+                }
             }
         }
         
-        // Item
+        // Adjust path
+        self.currentPath = [self.currentPath stringByDeletingLastPathComponent];
+        
+        // If end of an item then tell delegate
         if (!processed) {
-            if ([self.currentPath isEqualToString:@"/rss/channel/item/title"]) {
-                if (trimmedText.length) {
-                    self.item = [[ADBFeedItemDTO alloc] init];
-                    self.item.title = trimmedText;
-                }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/link"]) {
-                if (trimmedText.length) {
-                    self.item.link = trimmedText;
-                }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/guid"]) {
-                if (trimmedText.length) {
-                    self.item.identifier = trimmedText;
-                }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/description"]) {
-                if (trimmedText.length) {
-                    self.item.summary = trimmedText;
-                }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/media:thumbnail"]) {
-                [self _processImageLink:self.currentElementAttributes addToObject:self.item];
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/content:encoded"]) {
-                if (trimmedText.length) {
-                    self.item.content = trimmedText;
-                }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/pubDate"]) {
-                if (trimmedText.length) {
-                    self.item.date = [NSDate dateFromInternetDateTimeString:trimmedText formatHint:DateFormatHintRFC822];
-                }
-                processed = YES;
-            }
-            else if ([self.currentPath isEqualToString:@"/rss/channel/item/dc:date"]) {
-                if (trimmedText.length) {
-                    self.item.date = [NSDate dateFromInternetDateTimeString:trimmedText formatHint:DateFormatHintRFC3339];
-                }
-                processed = YES;
+            if ([qName isEqualToString:@"item"]) {
+                // Dispatch item to delegate
+                [self _dispatchFeedItemToDelegate];
             }
         }
-    }
-	
-	// Adjust path
-	self.currentPath = [self.currentPath stringByDeletingLastPathComponent];
-	
-	// If end of an item then tell delegate
-	if (!processed) {
-		if ([qName isEqualToString:@"item"]) {
-			// Dispatch item to delegate
-			[self _dispatchFeedItemToDelegate];
-		}
-	}
-	
-	// Check if the document has finished parsing and send off info if needed (i.e. there were no items)
-	if (!processed) {
-		if ([qName isEqualToString:@"rss"]) {
-			// Document ending so if we havent sent off feed info yet, do so
-			if (self.info) [self _dispatchFeedInfoToDelegate];
-		}
-	}
+        
+        // Check if the document has finished parsing and send off info if needed (i.e. there were no items)
+        if (!processed) {
+            if ([qName isEqualToString:@"rss"]) {
+                // Document ending so if we havent sent off feed info yet, do so
+                if (self.info) [self _dispatchFeedInfoToDelegate];
+            }
+        }
+    });
 }
 
 // error handling
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
-    DLog(@"XMLParser error: %@", [parseError localizedDescription]);
-    [self _parsingFailedWithErrorCode:ADBErrorCodeFeedParsingError description:[parseError localizedDescription]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"XMLParser error: %@", [parseError localizedDescription]);
+        [self _parsingFailedWithErrorCode:ADBErrorCodeFeedParsingError description:[parseError localizedDescription]];
+    });
 }
 
 - (void)parser:(NSXMLParser *)parser validationErrorOccurred:(NSError *)validationError
 {
-    DLog(@"XMLParser error: %@", [validationError localizedDescription]);
-    [self _parsingFailedWithErrorCode:ADBErrorCodeFeedValidationError description:[validationError localizedDescription]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"XMLParser error: %@", [validationError localizedDescription]);
+        [self _parsingFailedWithErrorCode:ADBErrorCodeFeedValidationError description:[validationError localizedDescription]];
+    });
 }
 
 #pragma mark - Private
@@ -339,7 +364,9 @@ didStartElement:(NSString *)elementName
             [xmlparser setShouldProcessNamespaces:YES];
             
             self.feedParser = xmlparser;
-            [self.feedParser parse];
+            dispatch_async(self.workingQueue, ^{
+                [self.feedParser parse];
+            });
 		} else {
 			[self _parsingFailedWithErrorCode:ADBErrorCodeFeedParsingError description:@"Error with feed encoding"];
 		}
@@ -360,16 +387,6 @@ didStartElement:(NSString *)elementName
         // Finish
 		self.info = nil;
 	}
-}
-
-- (void)_reset
-{
-	self.connectionTextEncodingName = nil;
-	self.currentPath = @"/";
-	self.currentText = [[NSMutableString alloc] init];
-	self.item = nil;
-	self.info = nil;
-	self.currentElementAttributes = nil;
 }
 
 - (void)_dispatchFeedItemToDelegate
@@ -395,6 +412,16 @@ didStartElement:(NSString *)elementName
 		// Finish
 		self.item = nil;
 	}
+}
+
+- (void)_reset
+{
+	self.connectionTextEncodingName = nil;
+	self.currentPath = @"/";
+	self.currentText = [[NSMutableString alloc] init];
+	self.item = nil;
+	self.info = nil;
+	self.currentElementAttributes = nil;
 }
 
 - (BOOL)_processImageLink:(NSDictionary *)attributes addToObject:(id)obj
