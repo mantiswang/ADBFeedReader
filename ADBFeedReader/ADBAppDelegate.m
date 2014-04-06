@@ -29,7 +29,6 @@
     ADBMasterTableViewController *masterTableViewController = [[ADBMasterTableViewController alloc] initWithFeedParser:feedParser];
 
     feedParser.delegate = masterTableViewController;
-    feedParser.datasource = masterTableViewController;
     
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:masterTableViewController];
     masterTableViewController.managedObjectContext = self.managedObjectContext;

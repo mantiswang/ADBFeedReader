@@ -35,6 +35,10 @@
 		D3E736E318356E40006F0F5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D3E736E018356E40006F0F5D /* InfoPlist.strings */; };
 		D3E736EE18356EA7006F0F5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D3E736EA18356EA7006F0F5D /* InfoPlist.strings */; };
 		F0104EA8170844FC00B30C6F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0104EA7170844FC00B30C6F /* SystemConfiguration.framework */; };
+		F01E416C18F172E100C14E9C /* ADBFeedInfoDTO.m in Sources */ = {isa = PBXBuildFile; fileRef = F01E416B18F172E100C14E9C /* ADBFeedInfoDTO.m */; };
+		F01E416F18F172EC00C14E9C /* ADBFeedItemDTO.m in Sources */ = {isa = PBXBuildFile; fileRef = F01E416E18F172EC00C14E9C /* ADBFeedItemDTO.m */; };
+		F01E417218F17AC200C14E9C /* FeedItem+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = F01E417118F17AC200C14E9C /* FeedItem+Additions.m */; };
+		F01E417518F17ACD00C14E9C /* FeedInfo+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = F01E417418F17ACD00C14E9C /* FeedInfo+Additions.m */; };
 		F047231117062ABD00EE78D2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7AB8BC151D932E00FB21FA /* UIKit.framework */; };
 		F047231217062ABD00EE78D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7AB8BE151D932E00FB21FA /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -88,6 +92,14 @@
 		D3E736E118356E40006F0F5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D3E736EB18356EA7006F0F5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ADBFeedReader/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		F0104EA7170844FC00B30C6F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		F01E416A18F172E100C14E9C /* ADBFeedInfoDTO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADBFeedInfoDTO.h; path = ADBFeedReader/ADBFeedInfoDTO.h; sourceTree = SOURCE_ROOT; };
+		F01E416B18F172E100C14E9C /* ADBFeedInfoDTO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ADBFeedInfoDTO.m; path = ADBFeedReader/ADBFeedInfoDTO.m; sourceTree = SOURCE_ROOT; };
+		F01E416D18F172EC00C14E9C /* ADBFeedItemDTO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADBFeedItemDTO.h; path = ADBFeedReader/ADBFeedItemDTO.h; sourceTree = SOURCE_ROOT; };
+		F01E416E18F172EC00C14E9C /* ADBFeedItemDTO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ADBFeedItemDTO.m; path = ADBFeedReader/ADBFeedItemDTO.m; sourceTree = SOURCE_ROOT; };
+		F01E417018F17AC200C14E9C /* FeedItem+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FeedItem+Additions.h"; path = "ADBFeedReader/FeedItem+Additions.h"; sourceTree = SOURCE_ROOT; };
+		F01E417118F17AC200C14E9C /* FeedItem+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FeedItem+Additions.m"; path = "ADBFeedReader/FeedItem+Additions.m"; sourceTree = SOURCE_ROOT; };
+		F01E417318F17ACD00C14E9C /* FeedInfo+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FeedInfo+Additions.h"; path = "ADBFeedReader/FeedInfo+Additions.h"; sourceTree = SOURCE_ROOT; };
+		F01E417418F17ACD00C14E9C /* FeedInfo+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FeedInfo+Additions.m"; path = "ADBFeedReader/FeedInfo+Additions.m"; sourceTree = SOURCE_ROOT; };
 		F047230E17062ABD00EE78D2 /* ADBFeedReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ADBFeedReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F092FD5218CBC7E700CB5264 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		F092FD5418CBCA2C00CB5264 /* LICENSE.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.markdown; sourceTree = "<group>"; };
@@ -191,7 +203,15 @@
 				D3E736A218356D4B006F0F5D /* FeedInfo.m */,
 				D3E736A318356D4B006F0F5D /* FeedItem.h */,
 				D3E736A418356D4B006F0F5D /* FeedItem.m */,
+				F01E417318F17ACD00C14E9C /* FeedInfo+Additions.h */,
+				F01E417418F17ACD00C14E9C /* FeedInfo+Additions.m */,
+				F01E417018F17AC200C14E9C /* FeedItem+Additions.h */,
+				F01E417118F17AC200C14E9C /* FeedItem+Additions.m */,
 				D3E736A518356D4B006F0F5D /* FeedReader.xcdatamodeld */,
+				F01E416A18F172E100C14E9C /* ADBFeedInfoDTO.h */,
+				F01E416B18F172E100C14E9C /* ADBFeedInfoDTO.m */,
+				F01E416D18F172EC00C14E9C /* ADBFeedItemDTO.h */,
+				F01E416E18F172EC00C14E9C /* ADBFeedItemDTO.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -415,6 +435,8 @@
 			files = (
 				D30FD15F1872181900711849 /* FeedReader.xcdatamodeld in Sources */,
 				D3E736AF18356D64006F0F5D /* ADBMasterTableViewController.m in Sources */,
+				F01E416F18F172EC00C14E9C /* ADBFeedItemDTO.m in Sources */,
+				F01E417218F17AC200C14E9C /* FeedItem+Additions.m in Sources */,
 				D3E736CA18356DFD006F0F5D /* ADBWebBrowserViewController.m in Sources */,
 				D30FD1551872083500711849 /* ADBFeedParser.m in Sources */,
 				D3E736DA18356E14006F0F5D /* main.m in Sources */,
@@ -425,6 +447,8 @@
 				D3E736C218356D8B006F0F5D /* UIViewController+CoreData.m in Sources */,
 				D3E736AE18356D64006F0F5D /* ADBDetailTableViewController.m in Sources */,
 				D3E736A618356D4B006F0F5D /* FeedInfo.m in Sources */,
+				F01E416C18F172E100C14E9C /* ADBFeedInfoDTO.m in Sources */,
+				F01E417518F17ACD00C14E9C /* FeedInfo+Additions.m in Sources */,
 				D3E736A718356D4B006F0F5D /* FeedItem.m in Sources */,
 				D3E736DB18356E14006F0F5D /* Reachability.m in Sources */,
 			);

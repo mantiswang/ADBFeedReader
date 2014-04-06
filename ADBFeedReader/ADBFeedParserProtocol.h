@@ -8,11 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FeedInfo.h"
-#import "FeedItem.h"
+#import "ADBFeedInfoDTO.h"
+#import "ADBFeedItemDTO.h"
 
 @protocol ADBFeedParserDelegate;
-@protocol ADBFeedParserDataSource;
 
 @protocol ADBFeedParserProtocol <NSObject>
 
@@ -29,7 +28,6 @@
 - (void)stop;
 
 @property (nonatomic, weak) id <ADBFeedParserDelegate> delegate;
-@property (nonatomic, weak) id <ADBFeedParserDataSource> datasource;
 @property (nonatomic, strong) NSURL *url;
 
 @end
@@ -40,17 +38,8 @@
 @protocol ADBFeedParserDelegate <NSObject>
 @optional
 - (void)feedParserDidStart:(id<ADBFeedParserProtocol>)parser;
-- (void)feedParser:(id<ADBFeedParserProtocol>)parser didParseFeedInfo:(FeedInfo *)info;
-- (void)feedParser:(id<ADBFeedParserProtocol>)parser didParseFeedItem:(FeedItem *)item;
+- (void)feedParser:(id<ADBFeedParserProtocol>)parser didParseFeedInfo:(ADBFeedInfoDTO *)info;
+- (void)feedParser:(id<ADBFeedParserProtocol>)parser didParseFeedItem:(ADBFeedItemDTO *)item;
 - (void)feedParserDidFinish:(id<ADBFeedParserProtocol>)parser;
 - (void)feedParser:(id<ADBFeedParserProtocol>)parser didFailWithError:(NSError *)error;
-@end
-
-/**
- DataSource
- */
-@protocol ADBFeedParserDataSource <NSObject>
-@required
-- (FeedInfo *)feedParser:(id<ADBFeedParserProtocol>)parser infoObjectWithTitle:(NSString *)title;
-- (FeedItem *)feedParser:(id<ADBFeedParserProtocol>)parser itemObjectWithTitle:(NSString *)title;
 @end

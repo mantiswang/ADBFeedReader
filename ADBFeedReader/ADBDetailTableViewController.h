@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FeedItem.h"
+#import "ADBFeedItemDTO.h"
 #import "ADBWebBrowserViewController.h"
 #import "ADBImageView.h"
 
 @interface ADBDetailTableViewController : UITableViewController
 
-@property (nonatomic, strong) FeedItem *item;
+@property (nonatomic, strong) ADBFeedItemDTO *item;
 @property (nonatomic, copy) NSString *dateString;
 @property (nonatomic, copy) NSString *summaryString;
 

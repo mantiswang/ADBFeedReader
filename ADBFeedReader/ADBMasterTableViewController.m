@@ -6,14 +6,19 @@
 //  Copyright (c) 2013 Alberto De Bortoli. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
 #import "ADBMasterTableViewController.h"
 #import "ADBDetailTableViewController.h"
 #import "SVPullToRefresh.h"
-#import "ADBFeedParser.h"
 #import "Reachability.h"
 #import "NSString+HTML.h"
-#import "FeedInfo.h"
-#import "FeedItem.h"
+#import "FeedInfo+Additions.h"
+#import "FeedItem+Additions.h"
+#import "ADBFeedParser.h"
+#import "ADBFeedInfoDTO.h"
+#import "ADBFeedItemDTO.h"
 #import "ADBConstants.h"
 
 @interface ADBMasterTableViewController () <
@@ -75,7 +80,12 @@ ADBImageViewDelegate>
         
         NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
         if ([fetchedObjects count]) {
-            self.itemsToDisplay = [NSMutableArray arrayWithArray:fetchedObjects];
+            NSMutableArray *dtoObjects = [NSMutableArray arrayWithCapacity:[fetchedObjects count]];
+            for (FeedItem *feedItem in fetchedObjects) {
+                ADBFeedItemDTO *feedItemDTO = [feedItem dtoRepresentation];
+                [dtoObjects addObject:feedItemDTO];
+            }
+            self.itemsToDisplay = dtoObjects;
             [self.tableView reloadData];
         }
     }
@@ -104,18 +114,20 @@ ADBImageViewDelegate>
 	NSLog(@"Started Parsing: %@", parser.url);
 }
 
-- (void)feedParser:(ADBFeedParser *)parser didParseFeedInfo:(FeedInfo *)info
+- (void)feedParser:(ADBFeedParser *)parser didParseFeedInfo:(ADBFeedInfoDTO *)info
 {
 	NSLog(@"Parsed Feed Info: “%@”", info.title);
-	self.title = info.title;
+    self.title = info.title;
+    [self _persistedInfoObject:info];
 }
 
-- (void)feedParser:(ADBFeedParser *)parser didParseFeedItem:(FeedItem *)item
+- (void)feedParser:(ADBFeedParser *)parser didParseFeedItem:(ADBFeedItemDTO *)item
 {
 	NSLog(@"Parsed Feed Item: “%@”", item.title);
 	if (item) {
         [self.parsedItems addObject:item];
     }
+    [self _persistedItemObject:item];
 }
 
 - (void)feedParserDidFinish:(ADBFeedParser *)parser
@@ -151,17 +163,15 @@ ADBImageViewDelegate>
     [self.tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:0.5];
 }
 
-#pragma mark - ADBFeedParserDataSource
+#pragma mark - Core Data
 
-- (FeedInfo *)feedParser:(ADBFeedParser *)parser infoObjectWithTitle:(NSString *)title;
+- (BOOL)_persistedInfoObject:(ADBFeedInfoDTO *)feedInfo
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"FeedInfo" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title == %@", title];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title == %@", feedInfo.title];
     [fetchRequest setPredicate:predicate];
-    
-    [self.managedObjectContext save:nil];
     
     NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
     
@@ -177,18 +187,21 @@ ADBImageViewDelegate>
         info = [NSEntityDescription insertNewObjectForEntityForName:@"FeedInfo" inManagedObjectContext:self.managedObjectContext];
     }
     
-    return info;
+    info.title = feedInfo.title;
+    info.author = feedInfo.author;
+    info.link = feedInfo.link;
+    info.summary = feedInfo.summary;
+    
+    return [self.managedObjectContext save:nil];
 }
 
-- (FeedItem *)feedParser:(ADBFeedParser *)parser itemObjectWithTitle:(NSString *)title;
+- (BOOL)_persistedItemObject:(ADBFeedItemDTO *)feedItem
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"FeedItem" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title == %@", title];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title == %@", feedItem.title];
     [fetchRequest setPredicate:predicate];
-    
-    [self.managedObjectContext save:nil];
     
     NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
     
@@ -204,7 +217,16 @@ ADBImageViewDelegate>
         item = [NSEntityDescription insertNewObjectForEntityForName:@"FeedItem" inManagedObjectContext:self.managedObjectContext];
     }
     
-    return item;
+    item.title = feedItem.title;
+    item.summary = feedItem.summary;
+    item.link = feedItem.link;
+    item.content = feedItem.content;
+    item.identifier = feedItem.identifier;
+    item.image_url = feedItem.image_url;
+    item.update_date = feedItem.update_date;
+    item.date = feedItem.date;
+    
+    return [self.managedObjectContext save:nil];
 }
 
 #pragma mark - TableViewDataSource
@@ -286,7 +308,7 @@ ADBImageViewDelegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ADBDetailTableViewController *detail = [[ADBDetailTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    detail.item = (FeedItem *)[self.itemsToDisplay objectAtIndex:indexPath.row];
+    detail.item = (ADBFeedItemDTO *)[self.itemsToDisplay objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:detail animated:YES];
 	
     // Deselect
@@ -328,7 +350,7 @@ shouldReloadTableForSearchString:(NSString *)searchString
         detailViewController.managedObjectContext = self.managedObjectContext;
         
         NSIndexPath *indexPath = nil;
-        FeedItem *feedItem = nil;
+        ADBFeedItemDTO *feedItem = nil;
         
         if ([self.searchDisplayController isActive]) {
             indexPath = [self.searchDisplayController.searchResultsTableView indexPathForSelectedRow];

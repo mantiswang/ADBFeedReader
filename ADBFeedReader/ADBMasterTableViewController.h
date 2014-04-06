@@ -11,7 +11,7 @@
 #import "ADBFeedParserProtocol.h"
 #import "ADBImageView.h"
 
-@interface ADBMasterTableViewController : UITableViewController <ADBFeedParserDelegate, ADBFeedParserDataSource>
+@interface ADBMasterTableViewController : UITableViewController <ADBFeedParserDelegate>
 
 @property (nonatomic, strong) id<ADBFeedParserProtocol> feedParser;
 

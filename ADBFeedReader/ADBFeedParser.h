@@ -7,11 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "ADBFeedParserProtocol.h"
-
-@class FeedInfo;
-@class FeedItem;
 
 // Errors & codes
 extern NSString *const ADBErrorDomain;

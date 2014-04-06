@@ -11,9 +11,9 @@
 
 @interface FeedInfo : NSManagedObject
 
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * author;
-@property (nonatomic, retain) NSString * link;
-@property (nonatomic, retain) NSString * summary;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *author;
+@property (nonatomic, copy) NSString *link;
+@property (nonatomic, copy) NSString *summary;
 
 @end

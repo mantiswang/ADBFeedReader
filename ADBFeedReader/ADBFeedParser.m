@@ -7,8 +7,8 @@
 //
 
 #import "ADBFeedParser.h"
-#import "FeedInfo.h"
-#import "FeedItem.h"
+#import "ADBFeedInfoDTO.h"
+#import "ADBFeedItemDTO.h"
 #import "NSString+HTML.h"
 #import "NSDate+InternetDateTime.h"
 
@@ -16,8 +16,8 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 
 @interface ADBFeedParser ()
 
-@property (nonatomic, strong) FeedInfo *info;
-@property (nonatomic, strong) FeedItem *item;
+@property (nonatomic, strong) ADBFeedInfoDTO *info;
+@property (nonatomic, strong) ADBFeedItemDTO *item;
 @property (nonatomic, strong) NSMutableString *currentText;
 @property (nonatomic, strong) NSString *currentPath;
 @property (nonatomic, strong) NSDictionary *currentElementAttributes;
@@ -29,7 +29,6 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 @implementation ADBFeedParser
 
 @synthesize delegate = _delegate;
-@synthesize datasource = _datasource;
 @synthesize url = _url;
 
 - (id)initWithURL:(NSURL *)url
@@ -163,9 +162,7 @@ didStartElement:(NSString *)elementName
         if (!processed) {
             if ([self.currentPath isEqualToString:@"/rss/channel/title"]) {
                 if (trimmedText.length) {
-                    if (!self.info) {
-                        self.info = [self.datasource feedParser:self infoObjectWithTitle:trimmedText];
-                    }
+                    self.info = [[ADBFeedInfoDTO alloc] init];
                     self.info.title = trimmedText;
                 }
                 processed = YES;
@@ -188,9 +185,7 @@ didStartElement:(NSString *)elementName
         if (!processed) {
             if ([self.currentPath isEqualToString:@"/rss/channel/item/title"]) {
                 if (trimmedText.length) {
-                    if (!self.item) {
-                        self.item = [self.datasource feedParser:self itemObjectWithTitle:trimmedText];
-                    }
+                    self.item = [[ADBFeedItemDTO alloc] init];
                     self.item.title = trimmedText;
                 }
                 processed = YES;
