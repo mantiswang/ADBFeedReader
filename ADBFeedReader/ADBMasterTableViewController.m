@@ -11,7 +11,6 @@
 
 #import "ADBMasterTableViewController.h"
 #import "ADBDetailTableViewController.h"
-#import "SVPullToRefresh.h"
 #import "Reachability.h"
 #import "NSString+HTML.h"
 #import "FeedInfo+Additions.h"
@@ -92,13 +91,7 @@ ADBImageViewDelegate>
     
     // Internet connection available
     else {
-        __weak typeof(self) weakSelf = self;
-        
-        [self.tableView addPullToRefreshWithActionHandler:^{
-            [weakSelf refreshButtonPressed:weakSelf];
-        }];
-        
-        [self.feedParser start];
+        [self _refreshFeed];
     }
 }
 
@@ -139,8 +132,6 @@ ADBImageViewDelegate>
     if (![self.managedObjectContext save:&error]) {
         NSLog(@"Can't save: %@", [error localizedDescription]);
     }
-    
-    [self.tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:0.5];
 }
 
 - (void)feedParser:(ADBFeedParser *)parser didFailWithError:(NSError *)error
@@ -160,7 +151,6 @@ ADBImageViewDelegate>
     }
     
     [self _updateTableWithParsedItems];
-    [self.tableView.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:0.5];
 }
 
 #pragma mark - Core Data
@@ -368,6 +358,13 @@ shouldReloadTableForSearchString:(NSString *)searchString
 
 - (void)refreshButtonPressed:(id)sender
 {
+    [self _refreshFeed];
+}
+
+#pragma mark - Private
+
+- (void)_refreshFeed
+{
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     
     // No Internet connection
@@ -378,7 +375,6 @@ shouldReloadTableForSearchString:(NSString *)searchString
                                                   cancelButtonTitle:NSLocalizedString(@"Ah, I see... x_x", nil)
                                                   otherButtonTitles:nil];
         [alertView show];
-        [self.tableView.pullToRefreshView stopAnimating];
     }
     
     // Internet connection available
@@ -390,8 +386,6 @@ shouldReloadTableForSearchString:(NSString *)searchString
         self.tableView.userInteractionEnabled = NO;
     }
 }
-
-#pragma mark - Private
 
 - (void)_filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
