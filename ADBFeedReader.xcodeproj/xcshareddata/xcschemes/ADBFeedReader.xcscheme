@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F047230D17062ABD00EE78D2"
-               BuildableName = "ADBFeedReaderTests.octest"
+               BuildableName = "ADBFeedReaderTests.xctest"
                BlueprintName = "ADBFeedReaderTests"
                ReferencedContainer = "container:ADBFeedReader.xcodeproj">
             </BuildableReference>
