@@ -34,15 +34,7 @@ The main part of the project (the feed parser *ADBFeedParser*) can be easily use
 ```
 ADBFeedParser *feedParser = [[ADBFeedParser alloc] initWithURL:aFeedURL];
 feedParser.delegate = self;
-feedParser.datasourece = self;
 [feedParser start];
-```
-
-* Make your controller conform * to *ADBFeedReaderDatasource* protocol and implement the methods to provide to the parser (the methods are all required):
-
-```
-- (FeedInfo *)feedParser:(ADBFeedParser *)parser infoObjectWithTitle:(NSString *)title;
-- (FeedItem *)feedParser:(ADBFeedParser *)parser itemObjectWithTitle:(NSString *)title;
 ```
 
 * Make your controller conform * to *ADBFeedReaderDelegate* protocol and implement the methods you need for retrieving informations from the feed (the methods are all optional):
