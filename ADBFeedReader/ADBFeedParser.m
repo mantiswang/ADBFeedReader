@@ -21,10 +21,8 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 @property (nonatomic, strong) NSMutableString *currentText;
 @property (nonatomic, strong) NSString *currentPath;
 @property (nonatomic, strong) NSDictionary *currentElementAttributes;
-@property (nonatomic, strong) NSURLConnection *urlConnection;
 @property (nonatomic, strong) NSXMLParser *feedParser;
 @property (nonatomic, strong) NSString *connectionTextEncodingName;
-@property (nonatomic, strong) NSMutableData *feedData;
 
 @end
 
@@ -59,14 +57,15 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
                                                             timeoutInterval:60];
 	[request setValue:@"ADBFeedParser" forHTTPHeaderField:@"User-Agent"];
 	
-	self.urlConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    if (self.urlConnection) {
-        self.feedData = [[NSMutableData alloc] init];
-    } else {
-        [self _parsingFailedWithErrorCode:ADBErrorCodeConnectionFailed
-                              description:[NSString stringWithFormat:@"NSURLConnection failed at URL: %@", self.url]];
-        return NO;
-    }
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if (!connectionError) {
+            [self _startParsingData:data];
+            
+        } else {
+            [self _parsingFailedWithErrorCode:ADBErrorCodeConnectionFailed
+                                  description:[NSString stringWithFormat:@"NSURLConnection failed at URL: %@", self.url]];
+        }
+    }];
     
     return YES;
 }
@@ -75,15 +74,9 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 {
 	// Debug Log
 	DLog(@"ADBFeedParser: Parsing stopped");
-    
-	// Stop downloading
-	[self.urlConnection cancel];
-	self.urlConnection = nil;
-	self.feedData = nil;
+
 	self.connectionTextEncodingName = nil;
-    
-	// Abort
-	[self.feedParser abortParsing];
+    [self.feedParser abortParsing];
 }
 
 #pragma mark - NSXMLParserDelegate
@@ -278,49 +271,6 @@ didStartElement:(NSString *)elementName
     [self _parsingFailedWithErrorCode:ADBErrorCodeFeedValidationError description:[validationError localizedDescription]];
 }
 
-#pragma mark - NSURLConnectionDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-	[self.feedData setLength:0];
-	self.connectionTextEncodingName = [response textEncodingName];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-	[self.feedData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-	// Failed
-	self.urlConnection = nil;
-	self.feedData = nil;
-	self.connectionTextEncodingName = nil;
-	
-    // Error
-	[self _parsingFailedWithErrorCode:ADBErrorCodeConnectionFailed description:[error localizedDescription]];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    // Succeed
-	DLog(@"ADBFeedParser: Connection successful... received %d bytes", [self.feedData length]);
-	
-	// Parse
-    [self _startParsingData:self.feedData];
-	
-    // Cleanup
-    self.urlConnection = nil;
-    self.feedData = nil;
-	self.connectionTextEncodingName = nil;
-}
-
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
-{
-	return nil; // Don't cache
-}
-
 #pragma mark - Private
 
 - (void)_startParsingData:(NSData *)data
@@ -419,9 +369,7 @@ didStartElement:(NSString *)elementName
 
 - (void)_reset
 {
-	self.feedData = nil;
 	self.connectionTextEncodingName = nil;
-	self.urlConnection = nil;
 	self.currentPath = @"/";
 	self.currentText = [[NSMutableString alloc] init];
 	self.item = nil;
