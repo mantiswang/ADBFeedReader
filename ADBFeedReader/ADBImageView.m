@@ -24,8 +24,8 @@ static CGFloat kADBImageViewTimoutInterval = 30.0;
     // Networking
     NSURLConnection *_connection;
     NSMutableData *_data;
-	
-	id <ADBImageViewDelegate> __weak _delegate;
+    
+    id <ADBImageViewDelegate> __weak _delegate;
 }
 
 #pragma mark - Initializers
@@ -130,8 +130,8 @@ static CGFloat kADBImageViewTimoutInterval = 30.0;
     
     [_connection cancel];
     _connection = nil;
-	self.data = nil;
-	
+    self.data = nil;
+    
     if ([_delegate respondsToSelector:@selector(adbImageView:didLoadImage:)]) {
         [_delegate adbImageView:self didLoadImage:imageData];
     }

@@ -41,20 +41,20 @@ ADBImageViewDelegate>
 {
     [super viewDidLoad];
 
-	// Date
-	if (self.item.date) {
-		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-		[formatter setDateStyle:NSDateFormatterMediumStyle];
-		[formatter setTimeStyle:NSDateFormatterMediumStyle];
-		self.dateString = [formatter stringFromDate:self.item.date];
-	}
-	
-	// Summary
-	if (self.item.summary) {
-		self.summaryString = self.item.summary;
-	} else {
-		self.summaryString = @"";
-	}
+    // Date
+    if (self.item.date) {
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateStyle:NSDateFormatterMediumStyle];
+        [formatter setTimeStyle:NSDateFormatterMediumStyle];
+        self.dateString = [formatter stringFromDate:self.item.date];
+    }
+    
+    // Summary
+    if (self.item.summary) {
+        self.summaryString = self.item.summary;
+    } else {
+        self.summaryString = @"";
+    }
     
     self.title = self.item.title;
     
@@ -72,57 +72,57 @@ ADBImageViewDelegate>
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	switch (section) {
-		case 0:
+    switch (section) {
+        case 0:
             return 3;
         case 1:
             return self.item.image_url ? 2 : 1;
-		default:
+        default:
             return 0;
-	}
+    }
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Get cell
-	static NSString *CellIdentifier = @"CellA";
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	if (cell == nil) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-	}
-	
-	// Display
-	cell.textLabel.textColor = [UIColor blackColor];
-	cell.textLabel.font = [UIFont systemFontOfSize:15];
-	if (self.item) {
-		// Item Info
-		NSString *itemTitle = self.item.title ? self.item.title : @"";
-		
-		// Display
-		switch (indexPath.section) {
-			case SectionHeader: {
-				// Header
-				switch (indexPath.row) {
-					case SectionHeaderTitle:
-						cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
-						cell.textLabel.text = itemTitle;
-						break;
-					case SectionHeaderDate:
-						cell.textLabel.text = self.dateString ? self.dateString : @"";
-						break;
-					case SectionHeaderURL:
-						cell.textLabel.text = self.item.link ? self.item.link : @"";
-						cell.textLabel.textColor = [UIColor blueColor];
-						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                        break;
-				}
-				break;
-			}
-			case SectionDetail: {
+    static NSString *CellIdentifier = @"CellA";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    
+    // Display
+    cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.font = [UIFont systemFontOfSize:15];
+    if (self.item) {
+        // Item Info
+        NSString *itemTitle = self.item.title ? self.item.title : @"";
+        
+        // Display
+        switch (indexPath.section) {
+            case SectionHeader: {
+                // Header
                 switch (indexPath.row) {
-					case SectionDetailSummary:
+                    case SectionHeaderTitle:
+                        cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
+                        cell.textLabel.text = itemTitle;
+                        break;
+                    case SectionHeaderDate:
+                        cell.textLabel.text = self.dateString ? self.dateString : @"";
+                        break;
+                    case SectionHeaderURL:
+                        cell.textLabel.text = self.item.link ? self.item.link : @"";
+                        cell.textLabel.textColor = [UIColor blueColor];
+                        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                        break;
+                }
+                break;
+            }
+            case SectionDetail: {
+                switch (indexPath.row) {
+                    case SectionDetailSummary:
                         cell.textLabel.text = self.summaryString;
                         cell.textLabel.numberOfLines = 0;
                         break;
@@ -154,11 +154,11 @@ ADBImageViewDelegate>
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.section == SectionHeader) {
-		// Regular
-		return 34;
-		
-	} else {
+    if (indexPath.section == SectionHeader) {
+        // Regular
+        return 34;
+        
+    } else {
         if (indexPath.row == SectionDetailSummary) {
             // Get height of summary
             CGSize size = [self.summaryString sizeWithFont:[UIFont systemFontOfSize:15]
@@ -179,13 +179,13 @@ ADBImageViewDelegate>
         return;
     }
     
-	// Link
-	if (indexPath.section == SectionHeader && indexPath.row == SectionHeaderURL) {
-		[self _openActionSheet];
+    // Link
+    if (indexPath.section == SectionHeader && indexPath.row == SectionHeaderURL) {
+        [self _openActionSheet];
     }
-	
-	// Deselect
-	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // Deselect
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 }
 

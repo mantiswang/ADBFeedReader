@@ -58,15 +58,15 @@ ADBImageViewDelegate>
     }
     
     // setup
-	self.title = NSLocalizedString(@"Loading...", nil);
-	self.formatter = [[NSDateFormatter alloc] init];
-	[self.formatter setDateStyle:NSDateFormatterShortStyle];
-	[self.formatter setTimeStyle:NSDateFormatterShortStyle];
-	self.parsedItems = [[NSMutableArray alloc] init];
-	self.itemsToDisplay = [NSArray array];
-	
-	// refresh button
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+    self.title = NSLocalizedString(@"Loading...", nil);
+    self.formatter = [[NSDateFormatter alloc] init];
+    [self.formatter setDateStyle:NSDateFormatterShortStyle];
+    [self.formatter setTimeStyle:NSDateFormatterShortStyle];
+    self.parsedItems = [[NSMutableArray alloc] init];
+    self.itemsToDisplay = [NSArray array];
+    
+    // refresh button
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                            target:self
                                                                                            action:@selector(refreshButtonPressed:)];
     
@@ -106,20 +106,20 @@ ADBImageViewDelegate>
 
 - (void)feedParserDidStart:(ADBFeedParser *)parser
 {
-	NSLog(@"Started Parsing: %@", parser.url);
+    NSLog(@"Started Parsing: %@", parser.url);
 }
 
 - (void)feedParser:(ADBFeedParser *)parser didParseFeedInfo:(ADBFeedInfoDTO *)info
 {
-	NSLog(@"Parsed Feed Info: “%@”", info.title);
+    NSLog(@"Parsed Feed Info: “%@”", info.title);
     self.title = info.title;
     [self _persistedInfoObject:info];
 }
 
 - (void)feedParser:(ADBFeedParser *)parser didParseFeedItem:(ADBFeedItemDTO *)item
 {
-	NSLog(@"Parsed Feed Item: “%@”", item.title);
-	if (item) {
+    NSLog(@"Parsed Feed Item: “%@”", item.title);
+    if (item) {
         [self.parsedItems addObject:item];
     }
     [self _persistedItemObject:item];
@@ -127,7 +127,7 @@ ADBImageViewDelegate>
 
 - (void)feedParserDidFinish:(ADBFeedParser *)parser
 {
-	NSLog(@"Finished Parsing");
+    NSLog(@"Finished Parsing");
     [self _updateTableWithParsedItems];
     
     NSError *error;
@@ -138,7 +138,7 @@ ADBImageViewDelegate>
 
 - (void)feedParser:(ADBFeedParser *)parser didFailWithError:(NSError *)error
 {
-	NSLog(@"Finished Parsing With Error: %@", error);
+    NSLog(@"Finished Parsing With Error: %@", error);
     
     if (self.parsedItems.count == 0) {
         self.title = NSLocalizedString(@"Failed", nil); // Show failed message in title
@@ -246,14 +246,14 @@ ADBImageViewDelegate>
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
         for (UIView *view in cell.imageView.subviews) {
             [view removeFromSuperview];
         }
     }
     
-	FeedItem *item = nil;
+    FeedItem *item = nil;
     
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         item = [self.searchResults objectAtIndex:indexPath.row];
@@ -261,18 +261,18 @@ ADBImageViewDelegate>
         item = [self.itemsToDisplay objectAtIndex:indexPath.row];
     }
     
-	if (item) {
-		// Process
-		NSString *itemTitle = item.title ? item.title : NSLocalizedString(@"[No Title]", nil);
-		NSString *itemSummary = item.summary ? item.summary : NSLocalizedString(@"[No Summary]", nil);
-		
-		// Set
-		cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
-		cell.textLabel.text = itemTitle;
-		NSMutableString *subtitle = [NSMutableString string];
-		if (item.date) [subtitle appendFormat:@"%@: ", [self.formatter stringFromDate:item.date]];
-		[subtitle appendString:itemSummary];
-		cell.detailTextLabel.text = subtitle;
+    if (item) {
+        // Process
+        NSString *itemTitle = item.title ? item.title : NSLocalizedString(@"[No Title]", nil);
+        NSString *itemSummary = item.summary ? item.summary : NSLocalizedString(@"[No Summary]", nil);
+        
+        // Set
+        cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
+        cell.textLabel.text = itemTitle;
+        NSMutableString *subtitle = [NSMutableString string];
+        if (item.date) [subtitle appendFormat:@"%@: ", [self.formatter stringFromDate:item.date]];
+        [subtitle appendString:itemSummary];
+        cell.detailTextLabel.text = subtitle;
         
         // Load image
         ADBImageView *imageView = [[ADBImageView alloc] initWithFrame:CGRectMake(0, 0, 43, 43)];
@@ -290,7 +290,7 @@ ADBImageViewDelegate>
         
         cell.imageView.image = image;
         [cell.imageView addSubview:imageView];
-	}
+    }
     
     return cell;
 }
@@ -302,9 +302,9 @@ ADBImageViewDelegate>
     ADBDetailTableViewController *detail = [[ADBDetailTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
     detail.item = (ADBFeedItemDTO *)[self.itemsToDisplay objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:detail animated:YES];
-	
+    
     // Deselect
-	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - ADBImageViewDelegate
@@ -398,10 +398,10 @@ shouldReloadTableForSearchString:(NSString *)searchString
 
 - (void)_updateTableWithParsedItems
 {
-	self.itemsToDisplay = [self.parsedItems sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO]]];
-	self.tableView.userInteractionEnabled = YES;
-	self.tableView.alpha = 1;
-	[self.tableView reloadData];
+    self.itemsToDisplay = [self.parsedItems sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO]]];
+    self.tableView.userInteractionEnabled = YES;
+    self.tableView.alpha = 1;
+    [self.tableView reloadData];
 }
 
 @end

@@ -63,7 +63,7 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
                                                                 cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                             timeoutInterval:60];
     [request setValue:@"ADBFeedParser" forHTTPHeaderField:@"User-Agent"];
-	
+    
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         if (!connectionError) {
             [self _startParsingData:data];
@@ -79,10 +79,10 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
 
 - (void)stop
 {
-	// Debug Log
-	DLog(@"ADBFeedParser: Parsing stopped");
+    // Debug Log
+    DLog(@"ADBFeedParser: Parsing stopped");
     
-	self.connectionTextEncodingName = nil;
+    self.connectionTextEncodingName = nil;
     [self.feedParser abortParsing];
 }
 
@@ -296,66 +296,66 @@ didStartElement:(NSString *)elementName
 - (void)_startParsingData:(NSData *)data
 {
     if (data) {
-		// Check whether it's UTF-8
-		if (![[self.connectionTextEncodingName lowercaseString] isEqualToString:@"utf-8"]) {
-			// Not UTF-8 so convert
-			DLog(@"ADBFeedParser: XML document was not UTF-8... converting it...");
-			NSString *string = nil;
-			
-			// Attempt to detect encoding from response header
-			NSStringEncoding nsEncoding = 0;
-			if (self.connectionTextEncodingName) {
-				CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.connectionTextEncodingName);
-				if (cfEncoding != kCFStringEncodingInvalidId) {
-					nsEncoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
-					if (nsEncoding != 0) string = [[NSString alloc] initWithData:data encoding:nsEncoding];
-				}
-			}
-			
-			// If that failed then make our own attempts
-			if (!string) {
-				// http://www.mikeash.com/pyblog/friday-qa-2010-02-19-character-encodings.html
-				string			    = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-				if (!string) string = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
-				if (!string) string = [[NSString alloc] initWithData:data encoding:NSMacOSRomanStringEncoding];
-			}
-			
-			data = nil;
-			
-			// Parse
-			if (string) {
-				// Set XML encoding to UTF-8
-				if ([string hasPrefix:@"<?xml"]) {
-					NSRange a = [string rangeOfString:@"?>"];
-					if (a.location != NSNotFound) {
-						NSString *xmlDec = [string substringToIndex:a.location];
-						if ([xmlDec rangeOfString:@"encoding=\"UTF-8\""
-										  options:NSCaseInsensitiveSearch].location == NSNotFound) {
-							NSRange b = [xmlDec rangeOfString:@"encoding=\""];
-							if (b.location != NSNotFound) {
-								NSUInteger s = b.location+b.length;
-								NSRange c = [xmlDec rangeOfString:@"\"" options:0 range:NSMakeRange(s, [xmlDec length] - s)];
-								if (c.location != NSNotFound) {
-									NSString *temp = [string stringByReplacingCharactersInRange:NSMakeRange(b.location,c.location+c.length-b.location)
+        // Check whether it's UTF-8
+        if (![[self.connectionTextEncodingName lowercaseString] isEqualToString:@"utf-8"]) {
+            // Not UTF-8 so convert
+            DLog(@"ADBFeedParser: XML document was not UTF-8... converting it...");
+            NSString *string = nil;
+            
+            // Attempt to detect encoding from response header
+            NSStringEncoding nsEncoding = 0;
+            if (self.connectionTextEncodingName) {
+                CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)self.connectionTextEncodingName);
+                if (cfEncoding != kCFStringEncodingInvalidId) {
+                    nsEncoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
+                    if (nsEncoding != 0) string = [[NSString alloc] initWithData:data encoding:nsEncoding];
+                }
+            }
+            
+            // If that failed then make our own attempts
+            if (!string) {
+                // http://www.mikeash.com/pyblog/friday-qa-2010-02-19-character-encodings.html
+                string                = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if (!string) string = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
+                if (!string) string = [[NSString alloc] initWithData:data encoding:NSMacOSRomanStringEncoding];
+            }
+            
+            data = nil;
+            
+            // Parse
+            if (string) {
+                // Set XML encoding to UTF-8
+                if ([string hasPrefix:@"<?xml"]) {
+                    NSRange a = [string rangeOfString:@"?>"];
+                    if (a.location != NSNotFound) {
+                        NSString *xmlDec = [string substringToIndex:a.location];
+                        if ([xmlDec rangeOfString:@"encoding=\"UTF-8\""
+                                          options:NSCaseInsensitiveSearch].location == NSNotFound) {
+                            NSRange b = [xmlDec rangeOfString:@"encoding=\""];
+                            if (b.location != NSNotFound) {
+                                NSUInteger s = b.location+b.length;
+                                NSRange c = [xmlDec rangeOfString:@"\"" options:0 range:NSMakeRange(s, [xmlDec length] - s)];
+                                if (c.location != NSNotFound) {
+                                    NSString *temp = [string stringByReplacingCharactersInRange:NSMakeRange(b.location,c.location+c.length-b.location)
                                                                                      withString:@"encoding=\"UTF-8\""];
-									string = temp;
-								}
-							}
-						}
-					}
-				}
-				
-				// Convert string to UTF-8 data
-				if (string) {
-					data = [string dataUsingEncoding:NSUTF8StringEncoding];
-				}
-				
-			}
-			
-		}
-		
-		// Create NSXMLParser
-		if (data) {
+                                    string = temp;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Convert string to UTF-8 data
+                if (string) {
+                    data = [string dataUsingEncoding:NSUTF8StringEncoding];
+                }
+                
+            }
+            
+        }
+        
+        // Create NSXMLParser
+        if (data) {
             NSXMLParser *xmlparser = [[NSXMLParser alloc] initWithData:data];
             
             // this class will handle the events
@@ -367,70 +367,70 @@ didStartElement:(NSString *)elementName
             dispatch_async(self.workingQueue, ^{
                 [self.feedParser parse];
             });
-		} else {
-			[self _parsingFailedWithErrorCode:ADBErrorCodeFeedParsingError description:@"Error with feed encoding"];
-		}
-	}
+        } else {
+            [self _parsingFailedWithErrorCode:ADBErrorCodeFeedParsingError description:@"Error with feed encoding"];
+        }
+    }
 }
 
 - (void)_dispatchFeedInfoToDelegate
 {
-	if (self.info) {
-		// Inform delegate
-		if ([self.delegate respondsToSelector:@selector(feedParser:didParseFeedInfo:)]) {
-			[self.delegate feedParser:self didParseFeedInfo:self.info];
+    if (self.info) {
+        // Inform delegate
+        if ([self.delegate respondsToSelector:@selector(feedParser:didParseFeedInfo:)]) {
+            [self.delegate feedParser:self didParseFeedInfo:self.info];
         }
-		
-		// Debug log
-		DLog(@"ADBFeedParser: info for \"%@\" successfully parsed", self.info.title);
-		
+        
+        // Debug log
+        DLog(@"ADBFeedParser: info for \"%@\" successfully parsed", self.info.title);
+        
         // Finish
-		self.info = nil;
-	}
+        self.info = nil;
+    }
 }
 
 - (void)_dispatchFeedItemToDelegate
 {
-	if (self.item) {
-		// Process before hand
-		if (!self.item.summary) {
+    if (self.item) {
+        // Process before hand
+        if (!self.item.summary) {
             self.item.summary = self.item.content;
             self.item.content = nil;
         }
         
-		if (!self.item.date && self.item.update_date) {
+        if (!self.item.date && self.item.update_date) {
             self.item.date = self.item.update_date;
         }
         
-		// Debug log
-		DLog(@"ADBFeedParser: item \"%@\" successfully parsed", self.item.title);
-		
-		// Inform delegate
-		if ([self.delegate respondsToSelector:@selector(feedParser:didParseFeedItem:)])
-			[self.delegate feedParser:self didParseFeedItem:self.item];
-		
-		// Finish
-		self.item = nil;
-	}
+        // Debug log
+        DLog(@"ADBFeedParser: item \"%@\" successfully parsed", self.item.title);
+        
+        // Inform delegate
+        if ([self.delegate respondsToSelector:@selector(feedParser:didParseFeedItem:)])
+            [self.delegate feedParser:self didParseFeedItem:self.item];
+        
+        // Finish
+        self.item = nil;
+    }
 }
 
 - (void)_reset
 {
-	self.connectionTextEncodingName = nil;
-	self.currentPath = @"/";
-	self.currentText = [[NSMutableString alloc] init];
-	self.item = nil;
-	self.info = nil;
-	self.currentElementAttributes = nil;
+    self.connectionTextEncodingName = nil;
+    self.currentPath = @"/";
+    self.currentText = [[NSMutableString alloc] init];
+    self.item = nil;
+    self.info = nil;
+    self.currentElementAttributes = nil;
 }
 
 - (BOOL)_processImageLink:(NSDictionary *)attributes addToObject:(id)obj
 {
-	if (attributes && [attributes objectForKey:@"url"]) {
+    if (attributes && [attributes objectForKey:@"url"]) {
         [obj setImage_url:[attributes objectForKey:@"url"]];
-		return YES;
+        return YES;
     }
-	return NO;
+    return NO;
 }
 
 - (void)_parsingFailedWithErrorCode:(int)code description:(NSString *)description

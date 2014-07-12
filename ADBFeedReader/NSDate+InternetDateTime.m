@@ -32,7 +32,7 @@ static NSDateFormatter *_internetDateTimeFormatter = nil;
 // Get a date from a string - hint can be used to speed up
 + (NSDate *)dateFromInternetDateTimeString:(NSString *)dateString formatHint:(DateFormatHint)hint
 {
-	NSDate *date = nil;
+    NSDate *date = nil;
     if (dateString) {
         if (hint != DateFormatHintRFC3339) {
             // Try RFC822 first
@@ -44,7 +44,7 @@ static NSDateFormatter *_internetDateTimeFormatter = nil;
             if (!date) date = [NSDate dateFromRFC822String:dateString];
         }
     }
-	return date;
+    return date;
 }
 
 // See http://www.faqs.org/rfcs/rfc822.html
@@ -135,7 +135,7 @@ static NSDateFormatter *_internetDateTimeFormatter = nil;
         }
     }
     
-	return date;
+    return date;
 }
 
 @end
