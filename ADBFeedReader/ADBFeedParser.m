@@ -59,16 +59,16 @@ NSString *const ADBErrorDomain = @"ADBFeedParser";
     [self _reset];
     
     // Request
-	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.url
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.url
                                                                 cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                             timeoutInterval:60];
-	[request setValue:@"ADBFeedParser" forHTTPHeaderField:@"User-Agent"];
+    [request setValue:@"ADBFeedParser" forHTTPHeaderField:@"User-Agent"];
 	
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         if (!connectionError) {
             [self _startParsingData:data];
-            
-        } else {
+        }
+        else {
             [self _parsingFailedWithErrorCode:ADBErrorCodeConnectionFailed
                                   description:[NSString stringWithFormat:@"NSURLConnection failed at URL: %@", self.url]];
         }
