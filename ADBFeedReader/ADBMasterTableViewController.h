@@ -13,8 +13,6 @@
 
 @interface ADBMasterTableViewController : UITableViewController <ADBFeedParserDelegate>
 
-@property (nonatomic, strong) id<ADBFeedParserProtocol> feedParser;
-
 - (instancetype)initWithFeedParser:(id<ADBFeedParserProtocol>)feedParser;
 
 @end

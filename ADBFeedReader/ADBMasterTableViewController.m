@@ -29,6 +29,8 @@ ADBImageViewDelegate>
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) NSDateFormatter *formatter;
 
+@property (nonatomic, strong) id<ADBFeedParserProtocol> feedParser;
+
 @end
 
 @implementation ADBMasterTableViewController
