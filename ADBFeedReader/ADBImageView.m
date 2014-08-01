@@ -36,7 +36,7 @@ static CGFloat kADBImageViewTimoutInterval = 30.0;
     
     if (self) {
         self.clipsToBounds = YES;
-        self.caching = YES;
+        _caching = YES;
         
         [self setUserInteractionEnabled:YES];
         [self setOpaque:YES];

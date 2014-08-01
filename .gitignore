@@ -12,5 +12,9 @@ xcuserdata
 profile
 *.moved-aside
 .DS_Store
-
+.idea/
+DerivedData
+build/
+*.swp
+*.lock
 Pods/

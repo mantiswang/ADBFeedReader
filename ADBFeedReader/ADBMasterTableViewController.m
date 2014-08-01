@@ -263,7 +263,7 @@ ADBImageViewDelegate>
     
     if (item) {
         // Process
-        NSString *itemTitle = item.title ? item.title : NSLocalizedString(@"[No Title]", nil);
+        NSString *itemTitle = item.title ?: NSLocalizedString(@"[No Title]", nil);
         NSString *itemSummary = item.summary ? item.summary : NSLocalizedString(@"[No Summary]", nil);
         
         // Set

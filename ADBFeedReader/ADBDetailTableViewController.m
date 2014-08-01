@@ -98,7 +98,7 @@ ADBImageViewDelegate>
     cell.textLabel.font = [UIFont systemFontOfSize:15];
     if (self.item) {
         // Item Info
-        NSString *itemTitle = self.item.title ? self.item.title : @"";
+        NSString *itemTitle = self.item.title ?: @"";
         
         // Display
         switch (indexPath.section) {
@@ -110,10 +110,10 @@ ADBImageViewDelegate>
                         cell.textLabel.text = itemTitle;
                         break;
                     case SectionHeaderDate:
-                        cell.textLabel.text = self.dateString ? self.dateString : @"";
+                        cell.textLabel.text = self.dateString ?: @"";
                         break;
                     case SectionHeaderURL:
-                        cell.textLabel.text = self.item.link ? self.item.link : @"";
+                        cell.textLabel.text = self.item.link ?: @"";
                         cell.textLabel.textColor = [UIColor blueColor];
                         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                         break;

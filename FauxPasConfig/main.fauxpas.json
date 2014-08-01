@@ -1,0 +1,231 @@
+// Generated from the Faux Pas GUI on 2014-08-01 23:13:57 +0000
+{
+    // Xcode target to check (String)
+    "target": "ADBFeedReader",
+    // Xcode build configuration to check (String)
+    "buildConfig": "Debug",
+    // Rules to apply (Array of strings)
+    //"rules": [],
+    // Rules to apply only (Array of strings)
+    //"onlyRules": [],
+    // Rule tags to apply (Array of strings)
+    //"ruleTags": ["Recommended"],
+    // Rules to exclude (Array of strings)
+    //"excludedRules": [],
+    // Prefixes of files to exclude (Array of strings)
+    //"fileExclusionPrefixes": [],
+    // Xcode groups to exclude (Array of strings)
+    //"fileExclusionXcodeGroups": ["Vendor"],
+    // Regexes for files to exclude (Array of regular expression strings)
+    //"fileExclusionRegexes": [],
+    // Minimum diagnostic severity to return nonzero exit status ("Concern" /
+    // "Warning" / "Error" / "Fatal")
+    //"minErrorStatusSeverity": "Error",
+    // Xcode workspace to build project with (File path)
+    "workspace": "ADBFeedReader.xcworkspace",
+    // Xcode scheme to build project with (String)
+    "scheme": "ADBFeedReader",
+    // Number of concurrent file checking jobs (Positive integer)
+    //"numConcurrentJobs": null,
+    // Additional compiler arguments to use (Array of strings)
+    //"extraCompilerArgs": [],
+    // Additional xcodebuild arguments to use (Array of strings)
+    //"extraXcodebuildArgs": [],
+    // Build project before checking (Boolean)
+    //"fullBuild": false,
+    // Cache project build logs (Boolean)
+    //"cacheBuildLog": true,
+    // Use our own modules cache (Boolean)
+    //"useOwnModulesCache": true,
+    // Verbose output (Boolean)
+    //"verbose": false,
+    // Output format ("human" / "json" / "plist" / "xml" / "xcode")
+    //"outputFormat": "human",
+
+    // Options for rules:
+    "ruleOptions": {
+        // Options for localization rules
+        "_LocalizationRules": {
+            // Functions used in place of NSLocalizedString (Array of strings)
+            //"localizedStringRoutines": []
+        },
+        // Options for rule: Absolute path in build setting value
+        "AbsPathInBuildSetting": {
+            // Allow system paths (Boolean)
+            //"allowSystemPaths": false
+        },
+        // Options for rule: Block-typed declaration without typedef
+        "NonTypedefBlockDeclaration": {
+            // Apply only to function/method arguments (Boolean)
+            //"onlyArguments": true
+        },
+        // Options for rule: Build settings set in Xcode GUI
+        "BuildSettingsSetInGUI": {
+            // Which settings are allowed to be set in the GUI (Array of
+            // strings)
+            //"allowedGUISettings": ["CODE_SIGN_IDENTITY","PROVISIONING_PROFILE"]
+        },
+        // Options for rule: Constructor return type
+        "ConstructorReturnType": {
+            // Check init methods (Boolean)
+            //"checkInitMethods": false
+        },
+        // Options for rule: Discarded opaque NSNotificationCenter observer
+        "DiscardedOpaqueNotificationObserver": {
+            // Do not warn if explicitly cast to void (Boolean)
+            //"suppressViaVoidCast": true
+        },
+        // Options for rule: Dot syntax usage
+        "DotSyntax": {
+            // Enforce dot syntax only for properties (Boolean)
+            //"onlyForProperties": false,
+            // Square bracket syntax method whitelist (Array of strings)
+            "allowedMethods": ["alloc","autorelease","becomeFirstResponder","new","release","retain","runModal","setNeedsDisplay:"]
+            // Allow factory methods like <objcmethod>+[NSArray
+            // array]</objcmethod> (Boolean)
+            //"allowConstructors": true
+        },
+        // Options for rule: Globally caching a thread-unsafe class instance
+        "ThreadUnsafeInstanceCaching": {
+            // The thread-unsafe classes to warn about (Array of strings)
+            "classNames": ["NSDateFormatter","NSMutableArray","NSMutableAttributedString","NSMutableCharacterSet","NSMutableData","NSMutableDictionary","NSMutableSet","NSMutableString","NSNumberFormatter"]
+        },
+        // Options for rule: Identifier naming
+        "IdentifierNaming": {
+            // Instance variable name format regex (Regular expression)
+            //"ivarNameFormat": "^_.+"
+            // Local variable name format regex (Regular expression)
+            //"localVarNameFormat": "^[^_].*"
+            // Function name format regex (Regular expression)
+            //"functionNameFormat": null
+            // Typedef name format regex (Regular expression)
+            //"typedefNameFormat": null
+            // Macro name format regex (Regular expression)
+            //"macroNameFormat": null
+            // Objective-C method name format regex (Regular expression)
+            //"objcMethodNameFormat": null
+            // Objective-C class name format regex (Regular expression)
+            //"objcClassNameFormat": null
+            // Objective-C category name format regex (Regular expression)
+            //"objcCategoryNameFormat": null
+        },
+        // Options for rule: Macro definition for literal value
+        "MacroLiteral": {
+            // Allowed literal values (Array of strings)
+            //"allowedLiterals": ["0","1"]
+        },
+        // Options for rule: Missing translation
+        "MissingTranslation": {
+            // Warn about missing development region translations (Boolean)
+            //"checkDevRegion": false
+            // Ignored key prefixes (Array of strings)
+            //"ignoredKeyPrefixes": []
+        },
+        // Options for rule: Moving common inclusions into prefix header
+        "PrefixHeaderIncludeSuggestion": {
+            // Show including files (Boolean)
+            //"showFiles": false
+            // Warning threshold percentage (Positive integer)
+            //"warningThresholdPercent": 30
+        },
+        // Options for rule: NSLog() used in release build
+        "NSLogUsed": {
+            // Allow calling NSLog() via macros (Boolean)
+            //"allowMacros": true
+        },
+        // Options for rule: Problematic release build compiler arguments
+        "ReleaseBuildCompilerArgs": {
+            // Required compiler arguments for all files (Array of strings)
+            "requiredArguments": ["-DNDEBUG","-DNS_BLOCK_ASSERTIONS=1"]
+            // Disallowed compiler arguments for all files (Array of strings)
+            //"disallowedArguments": []
+        },
+        // Options for rule: Project reference to file using absolute path
+        "FileRefWithAbsPath": {
+            // Allow system paths (Boolean)
+            //"allowSystemPaths": false
+        },
+        // Options for rule: Recommended VCS ignores
+        "RecommendedVCSIgnores": {
+            // Whether the Xcode workspace data should be ignored (Boolean)
+            //"workspaceIgnored": false
+            // Whether CocoaPods data should be ignored (Boolean)
+            //"cocoaPodsIgnored": true
+        },
+        // Options for rule: Recommended compiler warning options
+        "CompilerWarnings": {
+            // Recommended warning flags (Array of strings)
+            "flags": ["-Wall","-Wconversion","-Wdeprecated-implementations","-Wempty-body","-Werror","-Wextra","-Wfloat-equal","-Wimplicit-retain-self","-Wnewline-eof","-Wreturn-type","-Wshadow","-Wsign-compare","-Wundef"]
+        },
+        // Options for rule: Recommended project settings
+        "BasicProjectSettings": {
+            // The indentation type that should be set ("tabs" / "spaces")
+            //"indentType": null
+            // The 'tab width' that should be set (Positive integer)
+            //"tabWidth": null
+            // The 'indent width' that should be set (Positive integer)
+            //"indentWidth": null
+            // Whether the 'wrap lines' setting should be set or not ("wrap" /
+            // "nowrap")
+            //"wrapLines": null
+        },
+        // Options for rule: Redundant inclusion directive
+        "RedundantInclude": {
+            // Ignore system headers (Boolean)
+            //"ignoreSystemHeaders": true
+            // Ignore indirect inclusions (Boolean)
+            //"ignoreIndirectInclusions": false
+        },
+        // Options for rule: Reserved identifier name
+        "ReservedIdentifierNaming": {
+            // Check for identifier names reserved by the C standard (Boolean)
+            //"checkCStandard": true
+            // Check for identifier names reserved by the POSIX standard
+            // (Boolean)
+            //"checkPOSIXStandard": true
+        },
+        // Options for rule: Reserved symbol prefix
+        "ReservedPrefix": {
+            // Allow two-character prefixes that don't overlap system
+            // frameworks (Boolean)
+            //"allowNonOverlappingTwoCharPrefix": false
+        },
+        // Options for rule: Restricted direct method call
+        "RestrictedDirectMethodCall": {
+            // Allow direct calls from subclasses (Boolean)
+            //"allowInSubclass": true
+        },
+        // Options for rule: Setter invocation in init or dealloc method
+        "SetterInvocationInInitOrDealloc": {
+            // Apply to init methods (Boolean)
+            //"applyToInit": true
+            // Apply to dealloc methods (Boolean)
+            //"applyToDealloc": true
+            // Warn only if ivar available (Boolean)
+            //"onlyIfIvarAvailable": true
+        },
+        // Options for rule: Shortcut initializer
+        "NewInitializer": {
+            // Prefer the alloc-init style (Boolean)
+            //"preferAllocInit": true
+        },
+        // Options for rule: Translation border punctuation mismatch
+        "TranslationPunctuation": {
+            // Punctuation characters that should match (String)
+            //"punctuationChars": ".,:;!?…。"
+        },
+        // Options for rule: Unprefixed category method
+        "UnprefixedCategoryMethod": {
+            // Allowed prefixes (Array of strings)
+            //"prefixes": null
+            // Ignore setters (Boolean)
+            //"ignoreSetters": true
+        },
+        // Options for rule: Use of API not available in the minimum deployment
+        // target
+        "APIAvailability": {
+            // Avoid false positives (Boolean)
+            //"avoidFalsePositives": false
+        }
+    }
+}
